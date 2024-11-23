@@ -81,10 +81,20 @@ public class Order
 	public CustomerReference Customer { get; set; }
 	public Address DeliveryAddress { get; set; }
 	public string Notes { get; set; }
+	public decimal Net { get; set; }
+	public List<OrderLine> Lines { get; init; }
 
 	public Order()
 	{
 		CreatedAt = DateTime.Now;
+		Lines = new List<OrderLine>();
+		Net = 0;
+	}
+	public void AddLine(OrderLine line)
+	{
+		line.Index = Lines.Count + 1;
+		Lines.Add(line);
+		Net += line.Value;
 	}
 }
 
@@ -94,7 +104,9 @@ public class OrderLine
 	public ProductReference Product { get; set; }
 	public decimal Quantity { get; set; }
 	public decimal Price { get; set; }
-	public decimal Value { get; set; }
+	[BsonElement]
+	public decimal Value => Math.Round(Quantity * Price, 2);
+	//public void Value2() => Value = Math.Round(Quantity * Price, 2);
 }
 
 public class Customer

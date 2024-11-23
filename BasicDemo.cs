@@ -30,7 +30,7 @@ public class BasicDemo
 		var product = new Product()
 		{
 			Id = ObjectId.GenerateNewId().ToString(),
-			Name = "Base",
+			Name = "Water Base",
 			Group = group.GetReference(),
 			MeasureUnit = "liter"
 		};
@@ -38,7 +38,7 @@ public class BasicDemo
 		var product2 = new Product()
 		{
 			Id = ObjectId.GenerateNewId().ToString(),
-			Name = "Standard",
+			Name = "Water Standard",
 			Group = group.GetReference(),
 			MeasureUnit = "liter",
 			// IsCertified = true

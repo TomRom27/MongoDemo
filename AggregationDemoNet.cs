@@ -1,34 +1,11 @@
 
-/*
-
-var result = await usersCollection.Aggregate()
-    .Group(u => u.Status, g => new { Status = g.Key, AvgAge = g.Average(u => u.Age) })
-    .ToListAsync();
-
-    Aggregation stages such as $match, $group, $project, and $sort can be combined to perform complex data manipulations.
-
-Example Query in .NET: This full query example demonstrates a filter, projection, and sort together:
-
-csharp
-
-var filter = Builders<User>.Filter.Eq(u => u.Status, "Active");
-var projection = Builders<User>.Projection.Include(u => u.Name).Exclude(u => u.Address);
-var sort = Builders<User>.Sort.Ascending(u => u.Name);
-
-var activeUsers = await usersCollection.Find(filter)
-    .Project<User>(projection)
-    .Sort(sort)
-    .ToListAsync();
-
-*/
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace MongoDemo;
 
-public class AggregationDemo
+public class AggregationDemoNet
 {
-	public AggregationDemo()
+	public AggregationDemoNet()
 	{
 		Database.Init();
 
@@ -37,22 +14,25 @@ public class AggregationDemo
 	[Fact]
 	public async void Aggregate_Group()
 	{
+		await Samples.CreateProductAndGroups();
+
 		var result = await Database.Collection<Product>().Aggregate()
 			.Group(p => p.Group.Name, g => new { GroupName = g.Key, ProducsCount = g.Count() })
 			.ToListAsync();
 
+		Assert.Equal(2, result.Count);
 		/*
 [
 {
 $group: {
   _id: "$group.name",
-  aggregator: { $sum: 1 }
+  total: { $sum: 1 }
 }
 },
 {
 $project: {
   groupName: "$_id",
-  producsCount: "$aggregator",
+  producsCount: "$total",
   _id: 0
 }
 }
@@ -63,6 +43,8 @@ $project: {
 	[Fact]
 	public async void Aggregate_Project()
 	{
+		await Samples.CreateProductAndGroups();
+
 		var sweetFilter = Builders<Product>.Filter.In(p => p.Name, new string[] {
 			"Coca Cola", "Apple Pure" });
 
@@ -70,7 +52,7 @@ $project: {
 
 		var filter = Builders<Product>.Filter.And(sweetFilter, sodaFilter);
 
-		var vehicles = await Database.Collection<Product>()
+		var products = await Database.Collection<Product>()
 			.Aggregate()
 			.Match(filter)
 			.Project(
@@ -81,7 +63,7 @@ $project: {
 			.As<Product>()
 			.ToListAsync();
 
-
+		Assert.Equal(4, products.Count);
 		/*
 
 [

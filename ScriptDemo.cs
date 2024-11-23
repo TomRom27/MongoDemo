@@ -12,7 +12,7 @@ public class ScriptDemo
 	}
 
 	[Fact]
-	public async void PrepareCustomers()
+	public async void PrepareCustomersAndProducts()
 	{
 		await Database.DropCollections();
 		await Samples.CreateProductAndGroups();
@@ -25,5 +25,15 @@ public class ScriptDemo
 		// first run Recreate then this test
 		//
 
+	}
+
+	[Fact]
+	public async void OnDefaults_CompaniesOrders()
+	{
+		await Database.DropCollections();
+		await Samples.CreateProductAndGroups();
+		await Samples.CreateCustomers();
+		await Samples.CreateAlphabetOrders();
+		await Samples.CreateTeslaOrders();
 	}
 }

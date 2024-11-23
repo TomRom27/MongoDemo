@@ -96,6 +96,15 @@ public class Database
 			};
 		}
 
+		BsonSerializer.RegisterSerializer(
+			typeof(decimal),
+			new DecimalSerializer(BsonType.Decimal128,
+				new(
+					true, // allow overflow, return decimal.MinValue or decimal.MaxValue instead
+					true // allow truncation
+				))
+		);
+
 		mongoClient = new MongoClient(settings);
 	}
 

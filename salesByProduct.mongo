@@ -1,0 +1,32 @@
+[
+  {
+    $match: {
+      createdAt: {
+        $gte: ISODate("2024-10-01T00:00:00Z"),
+        $lte: ISODate("2024-10-31T23:59:59Z")
+      }
+    }
+  },
+  {
+    $unwind: "$lines"
+  },
+  {
+    $group: {
+      _id: "$lines.product.name",
+      sumValue: {
+        $sum: "$lines.value"
+      },
+      sumQuantity: {
+        $sum: "$lines.quantity"
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      name: "$_id",
+      sumValue: 1,
+      sumQuantity: 1
+    }
+  }
+]
